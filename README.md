@@ -26,7 +26,7 @@ Proses transformasi dari gambar RGB asli, ekstraksi Luminance, penyisipan, hingg
 
 Penjelasan 6 Tahap Transformasi:
 1. Gambar Asli (RGB): Foto *cover* asli (berwarna) sebelum mengalami proses modifikasi apapun.
-2. Ekstraksi Channel Y (Luminance):** Gambar dikonversi ke ruang warna YCbCr untuk memisahkan intensitas cahaya (hitam-putih) dari informasi warnanya. Penyisipan difokuskan di area ini agar warna asli gambar tidak berubah.
+2. Ekstraksi Channel Y (Luminance): Gambar dikonversi ke ruang warna YCbCr untuk memisahkan intensitas cahaya (hitam-putih) dari informasi warnanya. Penyisipan difokuskan di area ini agar warna asli gambar tidak berubah.
 3. Pola Watermark Biner: Wujud visual dari deretan bit data rahasia acak (0 dan 1) yang disembunyikan ke dalam gambar.
 4. Channel Y Setelah Disisipi (DCT): *Channel* luminance yang telah disisipi data *watermark* pada domain frekuensi menengah. Secara kasat mata, tidak terlihat adanya perbedaan dengan Panel 2.
 5. Hasil Akhir Watermarked (RGB): *Channel* Y yang telah dimodifikasi (Panel 4) digabungkan kembali dengan *channel* warna aslinya (Cb dan Cr). Hasil akhirnya adalah gambar berwarna yang 100% terlihat sama persis dengan aslinya (*Imperceptible*).
