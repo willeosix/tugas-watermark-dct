@@ -1,0 +1,15 @@
+# Python cache
+__pycache__/
+*.pyc
+
+# Gambar hasil kompresi uji coba otomatis
+wajah_warna_*.jpg
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Virtual environments
+.venv/
+venv/
+env/
