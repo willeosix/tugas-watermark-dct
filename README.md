@@ -1,28 +1,33 @@
-# Robust Invisible Watermarking using DCT (Discrete Cosine Transform)
+## Hasil Evaluasi Kompresi JPEG
 
-Repositori ini berisi implementasi *Digital Watermarking* (Steganografi) tingkat lanjut dari awal (*from scratch*) menggunakan Python. Proyek ini menyisipkan *watermark* berupa citra biner acak ke dalam foto digital (Cover Image) tanpa mengubah persepsi visual aslinya (*imperceptible*), serta tetap mempertahankan warna asli gambar.
+Script secara otomatis menguji ketahanan (*robustness*) watermark terhadap serangan kompresi *lossy* JPEG dengan berbagai tingkat *Quality Factor* (QF). Kinerja diukur menggunakan **Bit Error Rate (BER)**. Jika nilai BER mendekati 0.5 (50%), watermark dianggap rusak total atau hancur karena data yang diekstrak murni berupa *noise* acak.
 
-## Metodologi
-proyek ini menggunakan pendekatan **Domain Frekuensi**.
-1. **Color Space Transformation:** Gambar RGB diubah menjadi **YCbCr**. Penyisipan hanya dilakukan pada *channel* Luminance (Y) karena mata manusia lebih peka terhadap perubahan cahaya dibandingkan warna.
-2. **DCT 8x8 Blocks:** *Channel* Y dipecah menjadi blok 8x8 piksel dan diubah ke domain frekuensi menggunakan DCT.
-3. **Mid-Frequency Embedding:** *Watermark* disisipkan dengan memodifikasi koefisien pada frekuensi menengah untuk mencapai keseimbangan antara *invisibility* (tidak kasat mata) dan *robustness* (ketahanan).
+Berikut adalah hasil evaluasi ekstraksi watermark menggunakan metode DCT:
 
-## 📂 Struktur Repositori
-- `src/` : Berisi *source code* utama (`main_dct.py`) yang melakukan penyisipan, evaluasi kompresi JPEG, dan pembuatan visualisasi.
-- `test_vectors/` : Berisi gambar asli untuk pengujian dan *output* visualisasinya.
+| Quality Factor (QF) JPEG | Bit Error Rate (BER) | Status Ekstraksi |
+| --- | --- | --- |
+| **100** | 0.0000 | Sempurna (100% terekstrak) |
+| **95** | 0.0000 | Sempurna (100% terekstrak) |
+| **90** | 0.0000 | Sempurna (100% terekstrak) |
+| **80** | 0.0387 | Sangat Baik (Hanya 3,8% *error*) |
+| **50** | 0.4976 | **Rusak Total (Hancur)** |
+| **10** | 0.4980 | **Rusak Total (Hancur)** |
 
-## 🛠️ Instalasi & Penggunaan
+### Kesimpulan
 
-Pastikan Anda memiliki Python 3.8+ terinstal. 
+Berdasarkan hasil pengujian di atas, metode penyisipan *watermark* pada frekuensi menengah menggunakan **DCT (Discrete Cosine Transform)** terbukti **sangat tangguh (*robust*)** terhadap serangan kompresi *lossy* JPEG.
 
-```bash
-# 1. Clone repositori ini
-git clone [https://github.com/username-anda/tugas-watermark-dct.git](https://github.com/username-anda/tugas-watermark-dct.git)
-cd tugas-watermark-dct
+*Watermark* mampu bertahan dengan tingkat *error* yang sangat minim (hanya 3,1%) pada tingkat kompresi standar (QF 80). Algoritma kompresi JPEG baru berhasil menghancurkan *watermark* (BER ~50%) ketika gambar dikompresi secara ekstrem pada **QF 50** ke bawah. Hal ini terjadi karena pada QF 50, algoritma kuantisasi JPEG mulai membuang informasi secara agresif, tidak hanya pada frekuensi tinggi, tetapi juga mulai mengeliminasi data pada pita frekuensi menengah tempat koefisien *watermark* disembunyikan.
 
-# 2. Instal dependencies
-pip install -r requirements.txt
+## Visualisasi Transformasi (Step-by-Step)
+Proses transformasi dari gambar RGB asli, ekstraksi *Luminance*, penyisipan, hingga pembuktian jejak *noise* divisualisasikan pada gambar berikut:
 
-# 3. Jalankan script utama
-python src/main_watermarking.py
+![Visualisasi Watermark](test_vectors/visualisasi_watermark.jpg)
+
+**Penjelasan 6 Tahap Transformasi:**
+1. **Gambar Asli (RGB):** Foto *cover* asli (berwarna) sebelum mengalami proses modifikasi apapun.
+2. **Ekstraksi Channel Y (Luminance):** Gambar dikonversi ke ruang warna YCbCr untuk memisahkan intensitas cahaya (hitam-putih) dari informasi warnanya. Penyisipan difokuskan di area ini agar warna asli gambar tidak berubah.
+3. **Pola Watermark Biner:** Wujud visual dari deretan bit data rahasia acak (0 dan 1) yang disembunyikan ke dalam gambar.
+4. **Channel Y Setelah Disisipi (DCT):** *Channel* luminance yang telah disisipi data *watermark* pada domain frekuensi menengah. Secara kasat mata, tidak terlihat adanya perbedaan dengan Panel 2.
+5. **Hasil Akhir Watermarked (RGB):** *Channel* Y yang telah dimodifikasi (Panel 4) digabungkan kembali dengan *channel* warna aslinya (Cb dan Cr). Hasil akhirnya adalah gambar berwarna yang 100% terlihat sama persis dengan aslinya (*Imperceptible*).
+6. **Jejak Noise Watermark:** Ini adalah selisih (pengurangan) piksel antara Gambar Asli dan Hasil Akhir yang intensitasnya diamplifikasi/diperkuat. Panel ini membuktikan secara matematis keberadaan modifikasi data yang tersebar merata dalam bentuk blok-blok DCT berukuran 8x8 piksel.
